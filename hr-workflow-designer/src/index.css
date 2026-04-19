@@ -19,6 +19,10 @@
   --node-approval: #eab308;
   --node-automated: #a855f7;
   --node-end: #ef4444;
+  --node-condition: #f97316;
+  --node-delay: #64748b;
+  --node-parallel: #06b6d4;
+  --node-merge: #8b5cf6;
 }
 
 body.light-theme {
@@ -135,11 +139,15 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.dnd-node.start { border-left: 4px solid var(--node-start); }
-.dnd-node.task { border-left: 4px solid var(--node-task); }
-.dnd-node.approval { border-left: 4px solid var(--node-approval); }
+.dnd-node.start     { border-left: 4px solid var(--node-start); }
+.dnd-node.task      { border-left: 4px solid var(--node-task); }
+.dnd-node.approval  { border-left: 4px solid var(--node-approval); }
 .dnd-node.automated { border-left: 4px solid var(--node-automated); }
-.dnd-node.end { border-left: 4px solid var(--node-end); }
+.dnd-node.end       { border-left: 4px solid var(--node-end); }
+.dnd-node.condition { border-left: 4px solid var(--node-condition); }
+.dnd-node.delay     { border-left: 4px solid var(--node-delay); }
+.dnd-node.parallel  { border-left: 4px solid var(--node-parallel); }
+.dnd-node.merge     { border-left: 4px solid var(--node-merge); }
 
 /* Canvas Area */
 .canvas-area {
@@ -366,11 +374,30 @@ body {
   border: 2px solid var(--bg-secondary);
 }
 
-.start-node .node-header { color: var(--node-start); }
-.task-node .node-header { color: var(--node-task); }
-.approval-node .node-header { color: var(--node-approval); }
+.start-node .node-header     { color: var(--node-start); }
+.task-node .node-header      { color: var(--node-task); }
+.approval-node .node-header  { color: var(--node-approval); }
 .automated-node .node-header { color: var(--node-automated); }
-.end-node .node-header { color: var(--node-end); }
+.end-node .node-header       { color: var(--node-end); }
+.condition-node .node-header { color: var(--node-condition); }
+.delay-node .node-header     { color: var(--node-delay); }
+.parallel-node .node-header  { color: var(--node-parallel); }
+.merge-node .node-header     { color: var(--node-merge); }
+
+/* Edge label styling */
+.react-flow__edge-label {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+/* True / false branch labels */
+.edge-label-true  { color: #10b981; }
+.edge-label-false { color: #ef4444; }
 
 /* Selected node styling */
 .react-flow__node.selected .custom-node {

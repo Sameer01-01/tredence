@@ -27,18 +27,32 @@ export const NodeConfigPanel: React.FC = () => {
 
     if (name === 'title' && value.trim() === '') {
       errorMsg = 'Title is required';
-    } 
+    }
     if (name === 'autoApproveThreshold') {
       const num = Number(value);
       if (isNaN(num) || num < 0) {
         errorMsg = 'Must be a positive number';
         setErrors({ ...errors, [name]: errorMsg });
-        return; // Prevent update
+        return;
       }
+    }
+    if (name === 'delayMs') {
+      const num = Number(value);
+      if (isNaN(num) || num <= 0) {
+        errorMsg = 'Delay must be greater than 0';
+        setErrors({ ...errors, [name]: errorMsg });
+        return;
+      }
+    }
+    if ((name === 'field' || name === 'value') && value.trim() === '') {
+      errorMsg = `${name} cannot be empty`;
     }
 
     setErrors({ ...errors, [name]: errorMsg });
-    updateNodeData(selectedNode.id, { [name]: name === 'autoApproveThreshold' ? Number(value) : value });
+    const numericFields = ['autoApproveThreshold', 'delayMs'];
+    updateNodeData(selectedNode.id, {
+      [name]: numericFields.includes(name) ? Number(value) : value
+    });
   };
 
   const handleDelete = () => {
@@ -155,6 +169,96 @@ export const NodeConfigPanel: React.FC = () => {
             />
           </div>
         )}
+
+        {/* ---- CONDITION NODE ---- */}
+        {selectedNode.type === 'condition' && (
+          <>
+            <div className="form-group">
+              <label>Field</label>
+              <input
+                type="text"
+                name="field"
+                value={String(selectedNode.data?.field || '')}
+                onChange={handleChange}
+                placeholder="e.g. salary, level, score"
+                className={errors.field ? 'invalid-input' : ''}
+              />
+              {errors.field && <span style={{ color: '#ef4444', fontSize: '11px' }}>{errors.field}</span>}
+            </div>
+            <div className="form-group">
+              <label>Operator</label>
+              <select name="operator" value={String(selectedNode.data?.operator || '==')} onChange={handleChange}>
+                <option value="==">== (equals)</option>
+                <option value="!=">!= (not equals)</option>
+                <option value=">">&gt; (greater than)</option>
+                <option value="<">&lt; (less than)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Value</label>
+              <input
+                type="text"
+                name="value"
+                value={String(selectedNode.data?.value ?? '')}
+                onChange={handleChange}
+                placeholder="e.g. 5000"
+                className={errors.value ? 'invalid-input' : ''}
+              />
+              {errors.value && <span style={{ color: '#ef4444', fontSize: '11px' }}>{errors.value}</span>}
+            </div>
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+              ⚠️ Connect two edges from this node — label one <strong>true</strong> and one <strong>false</strong>.
+            </p>
+          </>
+        )}
+
+        {/* ---- DELAY NODE ---- */}
+        {selectedNode.type === 'delay' && (
+          <div className="form-group">
+            <label>Delay Duration (ms)</label>
+            <input
+              type="number"
+              name="delayMs"
+              value={String(selectedNode.data?.delayMs || '')}
+              onChange={handleChange}
+              placeholder="e.g. 2000"
+              className={errors.delayMs ? 'invalid-input' : ''}
+            />
+            {errors.delayMs && <span style={{ color: '#ef4444', fontSize: '11px' }}>{errors.delayMs}</span>}
+            <small style={{ color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
+              {selectedNode.data?.delayMs ? `= ${Number(selectedNode.data.delayMs) / 1000}s wait` : ''}
+            </small>
+          </div>
+        )}
+
+        {/* ---- PARALLEL NODE ---- */}
+        {selectedNode.type === 'parallel' && (
+          <div className="form-group">
+            <label>Label (optional)</label>
+            <input
+              type="text"
+              name="label"
+              value={String(selectedNode.data?.label || '')}
+              onChange={handleChange}
+              placeholder="e.g. Notify & Archive"
+            />
+            <small style={{ color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
+              Connect multiple outgoing edges — all branches run simultaneously.
+            </small>
+          </div>
+        )}
+
+        {/* ---- MERGE NODE ---- */}
+        {selectedNode.type === 'merge' && (
+          <div className="form-group">
+            <label>Merge Strategy</label>
+            <select name="strategy" value={String(selectedNode.data?.strategy || 'all')} onChange={handleChange}>
+              <option value="all">all — wait for every branch</option>
+              <option value="any">any — continue on first branch</option>
+            </select>
+          </div>
+        )}
+
       </div>
     </aside>
   );

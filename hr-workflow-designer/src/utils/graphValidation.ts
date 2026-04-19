@@ -111,11 +111,47 @@ export interface ValidationResult {
   errors: string[];
 }
 
+export function validateNewNodeRules(nodes: WorkflowNode[], edges: WorkflowEdge[]): string[] {
+  const errors: string[] = [];
+
+  for (const node of nodes) {
+    const outgoing = edges.filter(e => e.source === node.id);
+    const incoming = edges.filter(e => e.target === node.id);
+
+    if (node.type === 'condition') {
+      if (outgoing.length !== 2) {
+        errors.push(`Condition node "${node.data.title}" must have exactly 2 outgoing edges (true/false).`);
+      }
+    }
+    if (node.type === 'parallel') {
+      if (outgoing.length < 2) {
+        errors.push(`Parallel node "${node.data.title}" must have at least 2 outgoing edges.`);
+      }
+    }
+    if (node.type === 'merge') {
+      if (incoming.length < 2) {
+        errors.push(`Merge node "${node.data.title}" must have at least 2 incoming edges.`);
+      }
+    }
+    if (node.type === 'delay') {
+      const ms = node.data.delayMs as number | undefined;
+      if (!ms || ms <= 0) {
+        errors.push(`Delay node "${node.data.title}" must have a delay greater than 0ms.`);
+      }
+    }
+  }
+
+  return errors;
+}
+
 export function validateWorkflow(nodes: WorkflowNode[], edges: WorkflowEdge[]): ValidationResult {
   const errors: string[] = [];
 
   const layoutErrors = validateStartEndRules(nodes, edges);
   errors.push(...layoutErrors);
+
+  const structureErrors = validateNewNodeRules(nodes, edges);
+  errors.push(...structureErrors);
 
   const cycle = detectCycle(nodes, edges);
   if (cycle.length > 0) {

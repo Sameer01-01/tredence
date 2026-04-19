@@ -25,6 +25,10 @@ import { TaskNode } from '../nodes/TaskNode';
 import { ApprovalNode } from '../nodes/ApprovalNode';
 import { AutomatedNode } from '../nodes/AutomatedNode';
 import { EndNode } from '../nodes/EndNode';
+import { ConditionNode } from '../nodes/ConditionNode';
+import { DelayNode } from '../nodes/DelayNode';
+import { ParallelNode } from '../nodes/ParallelNode';
+import { MergeNode } from '../nodes/MergeNode';
 
 const nodeTypes = {
   start: StartNode,
@@ -32,6 +36,10 @@ const nodeTypes = {
   approval: ApprovalNode,
   automated: AutomatedNode,
   end: EndNode,
+  condition: ConditionNode,
+  delay: DelayNode,
+  parallel: ParallelNode,
+  merge: MergeNode,
 };
 
 const CanvasInner = () => {
@@ -254,11 +262,15 @@ const CanvasInner = () => {
         {showMiniMap && (
           <MiniMap 
           nodeColor={(n) => {
-            if (n.type === 'start') return 'var(--node-start)';
-            if (n.type === 'task') return 'var(--node-task)';
-            if (n.type === 'approval') return 'var(--node-approval)';
+            if (n.type === 'start')     return 'var(--node-start)';
+            if (n.type === 'task')      return 'var(--node-task)';
+            if (n.type === 'approval')  return 'var(--node-approval)';
             if (n.type === 'automated') return 'var(--node-automated)';
-            if (n.type === 'end') return 'var(--node-end)';
+            if (n.type === 'end')       return 'var(--node-end)';
+            if (n.type === 'condition') return 'var(--node-condition)';
+            if (n.type === 'delay')     return 'var(--node-delay)';
+            if (n.type === 'parallel')  return 'var(--node-parallel)';
+            if (n.type === 'merge')     return 'var(--node-merge)';
             return '#eee';
           }}
           nodeStrokeWidth={3}
