@@ -156,7 +156,7 @@ const CanvasInner = () => {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
+        onNodesChange={handleNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onInit={(instance) => console.log('Flow loaded:', instance)}
@@ -171,7 +171,6 @@ const CanvasInner = () => {
         panOnDrag={!isSelectMode}
         multiSelectionKeyCode="Shift"
         deleteKeyCode="Delete"
-        onNodesChange={handleNodesChange}
         fitView
       >
         <Background gap={16} size={1} color="#333" />
