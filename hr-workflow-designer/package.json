@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^10.0.0",
     "@xyflow/react": "^12.10.2",
     "dagre": "^0.8.5",
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.1",
     "uuid": "^13.0.0",
     "zundo": "^2.3.0",
     "zustand": "^5.0.12"
