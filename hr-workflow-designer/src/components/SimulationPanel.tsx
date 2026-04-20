@@ -9,10 +9,10 @@ export const SimulationPanel: React.FC = () => {
   const [logs, setLogs] = useState<SimulationStep[]>([]);
   const [isRunning, setIsRunning] = useState(false);
 
-  // Dragging state
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef({ x: 0, y: 0 });
+  const dragBounds = useRef({ minX: -Infinity, maxX: Infinity, minY: -Infinity, maxY: Infinity });
 
   const handleRun = async () => {
     setIsRunning(true);
@@ -58,14 +58,46 @@ export const SimulationPanel: React.FC = () => {
       x: e.clientX - position.x,
       y: e.clientY - position.y
     };
+    
+    const panel = e.currentTarget;
+    const canvasArea = panel.parentElement;
+    if (canvasArea) {
+      const panelRect = panel.getBoundingClientRect();
+      const canvasRect = canvasArea.getBoundingClientRect();
+      
+      const baseTop = panelRect.top - position.y;
+      const baseLeft = panelRect.left - position.x;
+      
+      dragBounds.current = {
+        minY: canvasRect.top - baseTop,
+        maxY: canvasRect.bottom - baseTop - panelRect.height,
+        minX: canvasRect.left - baseLeft,
+        maxX: canvasRect.right - baseLeft - panelRect.width
+      };
+    } else {
+      dragBounds.current = { minX: -Infinity, maxX: Infinity, minY: -Infinity, maxY: Infinity };
+    }
+
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return;
+    
+    let nextX = e.clientX - dragStartPos.current.x;
+    let nextY = e.clientY - dragStartPos.current.y;
+    
+    const { minX, maxX, minY, maxY } = dragBounds.current;
+    
+    if (nextY > maxY) nextY = maxY;
+    if (nextY < minY) nextY = minY;
+    
+    if (nextX > maxX) nextX = maxX;
+    if (nextX < minX) nextX = minX;
+
     setPosition({
-      x: e.clientX - dragStartPos.current.x,
-      y: e.clientY - dragStartPos.current.y
+      x: nextX,
+      y: nextY
     });
   };
 
