@@ -12,6 +12,7 @@ import {
   applyEdgeChanges,
 } from '@xyflow/react';
 import type { WorkflowNode, WorkflowEdge } from '../types/workflow';
+import type { WorkflowTemplate } from '../templates/workflowTemplates';
 
 // Define the state for the workflow builder
 interface WorkflowState {
@@ -29,6 +30,7 @@ interface WorkflowState {
   setSelectedNodeId: (id: string | null) => void;
   setNodeStatus: (id: string, status: 'idle' | 'running' | 'completed') => void;
   resetAllStatuses: () => void;
+  loadTemplate: (template: WorkflowTemplate) => void;
 }
 
 export const useWorkflowStore = create<WorkflowState>()(
@@ -81,6 +83,15 @@ export const useWorkflowStore = create<WorkflowState>()(
 
       resetAllStatuses: () => {
         set({ nodeStatus: {} });
+      },
+
+      loadTemplate: (template: WorkflowTemplate) => {
+        set({
+          nodes: template.nodes,
+          edges: template.edges,
+          selectedNodeId: null,
+          nodeStatus: {},
+        });
       },
     }),
     {

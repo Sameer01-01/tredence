@@ -3,11 +3,13 @@ import { Sidebar } from './components/Sidebar';
 import { Canvas } from './components/Canvas';
 import { NodeConfigPanel } from './components/NodeConfigPanel';
 import { SimulationPanel } from './components/SimulationPanel';
-import { Sun, Moon, Download, Upload, Undo, Redo, Copy } from 'lucide-react';
+import { TemplatePanel } from './components/TemplatePanel';
+import { Sun, Moon, Download, Upload, Undo, Redo, Copy, LayoutTemplate } from 'lucide-react';
 import { useWorkflowStore } from './store/workflowStore';
 
 function App() {
   const [isLightMode, setIsLightMode] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { nodes, edges, setNodes, setEdges } = useWorkflowStore();
@@ -94,6 +96,18 @@ function App() {
           
           <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 4px' }} />
 
+          <button
+            className="theme-toggle"
+            onClick={() => setShowTemplates(true)}
+            aria-label="Templates"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <LayoutTemplate size={16} />
+            <span style={{ fontSize: '14px', fontWeight: '500' }}>Templates</span>
+          </button>
+
+          <div style={{ width: '1px', background: 'var(--border-color)', margin: '0 4px' }} />
+
           <button className="theme-toggle" onClick={() => fileInputRef.current?.click()} aria-label="Import JSON">
             <Upload size={16} /> <span style={{ marginLeft: '6px', fontSize: '14px', fontWeight: '500' }}>Import</span>
           </button>
@@ -120,6 +134,7 @@ function App() {
         </main>
         <NodeConfigPanel />
       </div>
+      {showTemplates && <TemplatePanel onClose={() => setShowTemplates(false)} />}
     </div>
   );
 }
